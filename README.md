@@ -2,17 +2,6 @@
 
 A React + TypeScript workspace for practising front-end interview questions.
 
-## Features
-
-### Todos
-
-A todo list that survives a page refresh. Add, edit, delete and complete todos; filter by
-All / Active / Completed; see how many items are left; clear completed in one click. Titles
-that are empty or only whitespace are ignored, both when adding and when editing.
-
-Todos and the selected filter are saved through `usePersistedState`, a general-purpose
-`useState`-shaped hook backed by `localStorage` that any feature can reuse.
-
 ## Stack
 
 - **React 19** with **TypeScript** (strict mode)
@@ -59,10 +48,6 @@ src/
   index.css          Global styles and theme tokens
   setupTests.ts      Testing Library setup (jest-dom matchers, cleanup)
   App.test.tsx       Tests for App
-  hooks/
-    usePersistedState.ts   localStorage-backed state, reusable across features
-  features/
-    todos/           Todo feature: TodoApp, TodoForm, TodoList, TodoItem, TodoFooter
 ```
 
 ## Testing
