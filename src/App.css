@@ -1,0 +1,10 @@
+.app {
+  margin: 0 auto;
+  max-width: 44rem;
+  padding: 3rem 1.5rem;
+}
+
+.app__title {
+  margin: 0;
+  font-size: 2rem;
+}
