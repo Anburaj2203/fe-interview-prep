@@ -2,6 +2,19 @@
 
 A React + TypeScript workspace for practising front-end interview questions.
 
+## Features
+
+### Live search
+
+A search box that queries a public product API as you type. It waits until typing settles
+before sending a request, so a quickly typed word costs one request rather than one per
+keystroke, and a response to an older query can never overwrite the results for the current
+one. Loading, error (with retry), empty and results states are all shown, and the matched
+text is highlighted in each result.
+
+Built from two reusable pieces: `useDebouncedValue` for the typing delay and the shared API
+client in `src/api/`, which owns the base URL and the error shape.
+
 ## Stack
 
 - **React 19** with **TypeScript** (strict mode)
@@ -48,7 +61,23 @@ src/
   index.css          Global styles and theme tokens
   setupTests.ts      Testing Library setup (jest-dom matchers, cleanup)
   App.test.tsx       Tests for App
+  config/
+    env.ts           Environment values, read through import.meta.env
+  api/
+    client.ts        Shared fetch client: base URL, error shape, abort support
+  hooks/
+    useDebouncedValue.ts   Debounce any value, reusable across features
+  features/
+    search/          Live search: ProductSearch, SearchResults, HighlightedText
 ```
+
+## Configuration
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | `https://dummyjson.com` | Base URL for the search API |
+
+Only `VITE_`-prefixed variables reach the client. `.env*` files are not committed.
 
 ## Testing
 
