@@ -29,7 +29,7 @@ async function next(user: User) {
 }
 
 beforeEach(() => {
-  window.localStorage.clear()
+  window.sessionStorage.clear()
 })
 
 describe('RegisterWizard', () => {
@@ -152,5 +152,34 @@ describe('RegisterWizard', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Step 2 of 4')
     expect(screen.getByLabelText('City')).toHaveValue('Chennai')
     expect(screen.getByLabelText('Postal code')).toHaveValue('600001')
+  })
+  it('starts a clean form after a successful registration, keeping nothing behind', async () => {
+    const user = userEvent.setup()
+    const first = render(<RegisterWizard />)
+
+    await fillPersonal(user)
+    await next(user)
+    await fillAddress(user, 'India', '600001')
+    await next(user)
+    await fillPreferences(user, 'React')
+    await next(user)
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+    await screen.findByText('Thanks Ada Lovelace, your registration is complete.')
+
+    expect(window.localStorage.getItem('registration')).toBeNull()
+
+    first.unmount()
+    render(<RegisterWizard />)
+
+    expect(screen.getByRole('status')).toHaveTextContent('Step 1 of 4')
+    expect(screen.getByLabelText('Full name')).toHaveValue('')
+  })
+
+  it('starts at the first step when the stored step is not one of the real steps', () => {
+    window.sessionStorage.setItem('registration-step', '7')
+    render(<RegisterWizard />)
+
+    expect(screen.getByRole('status')).toHaveTextContent('Step 1 of 4')
+    expect(screen.getByLabelText('Full name')).toBeInTheDocument()
   })
 })

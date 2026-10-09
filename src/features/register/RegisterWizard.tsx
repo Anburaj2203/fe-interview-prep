@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { usePersistedState } from '../../hooks/usePersistedState'
 import { AddressStep } from './AddressStep'
@@ -17,12 +17,27 @@ const STEP_STORAGE_KEY = 'registration-step'
 
 const LAST_STEP = STEPS.length - 1
 
+function toStepIndex(value: number): StepIndex {
+  return value === 1 || value === 2 || value === 3 ? value : 0
+}
+
 export function RegisterWizard() {
   const [data, setData] = usePersistedState<Registration>(DATA_STORAGE_KEY, EMPTY_REGISTRATION)
-  const [step, setStep] = usePersistedState<StepIndex>(STEP_STORAGE_KEY, 0)
+  const [storedStep, setStep] = usePersistedState<StepIndex>(STEP_STORAGE_KEY, 0)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [confirmation, setConfirmation] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isMounted = useRef(true)
+
+  const step = toStepIndex(storedStep)
+
+  useEffect(() => {
+    isMounted.current = true
+
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
 
   function changeField(field: TextField, value: string) {
     setData((current) => ({ ...current, [field]: value }))
@@ -61,8 +76,15 @@ export function RegisterWizard() {
   async function submit() {
     setIsSubmitting(true)
     const message = await submitRegistration(data)
+
+    if (!isMounted.current) {
+      return
+    }
+
     setIsSubmitting(false)
     setConfirmation(message)
+    setData(EMPTY_REGISTRATION)
+    setStep(0)
   }
 
   if (confirmation !== '') {
