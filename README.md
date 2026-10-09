@@ -56,6 +56,7 @@ src/
 |1. TODO App | https://github.com/Anburaj2203/fe-interview-prep-/pull/2|
 |2. Live Search | https://github.com/Anburaj2203/fe-interview-prep-/pull/5|
 |3. Registration Wizard | https://github.com/Anburaj2203/fe-interview-prep-/pull/9|
+|3. Data Table | https://github.com/Anburaj2203/fe-interview-prep-/pull/10|
 
 
 ## Testing
