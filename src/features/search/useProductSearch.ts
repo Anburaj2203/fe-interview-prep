@@ -44,6 +44,7 @@ export function useProductSearch(query: string): ProductSearch {
     return () => {
       ignore = true
       controller.abort()
+      setOutcome(null)
     }
   }, [query, attempt])
 

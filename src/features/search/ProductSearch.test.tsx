@@ -24,6 +24,14 @@ function createPendingRequest(): PendingRequest {
   }
 }
 
+const DEBOUNCE_MS = 400
+
+async function pauseBeyondDebounce() {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 100))
+  })
+}
+
 function queryOf(input: RequestInfo | URL) {
   return new URL(String(input)).searchParams.get('q') ?? ''
 }
@@ -160,5 +168,24 @@ describe('ProductSearch', () => {
 
     expect(screen.getByRole('heading', { name: 'React book' })).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('shows loading, not the old results, when the same query is searched again', async () => {
+    const user = setup()
+    const searchBox = screen.getByRole('searchbox', { name: 'Search products' })
+
+    await typeQuery(user, 'react')
+    await waitForRequestCount(1)
+    await flush(() =>
+      pendingFor('react').respondWith([{ id: 1, title: 'React book', description: 'A guide' }]),
+    )
+
+    await user.clear(searchBox)
+    await pauseBeyondDebounce()
+    await typeQuery(user, 'react')
+    await waitForRequestCount(2)
+
+    expect(screen.getByRole('status')).toHaveTextContent('Searching for "react"...')
+    expect(screen.queryByRole('heading', { name: 'React book' })).not.toBeInTheDocument()
   })
 })
