@@ -65,3 +65,7 @@ src/
 Tests live next to the code they cover as `*.test.tsx` under `src/`. Vitest is scoped to
 `src/` only; the scripts in `.claude/hooks/tests/` are standalone Node scripts with their
 own runner (`node .claude/hooks/tests/run-all.cjs`).
+
+
+## YouTube link
+https://youtu.be/SnaqznrT85M
